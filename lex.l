@@ -5,33 +5,16 @@ int TokenCont=0;
 
 %}
 
-
-
-
-stringconst \"({letter}|{digit})+\"
-
-DIGIT  [0-9]
-DIGITS {DIGIT}+
-LETTER [a-zA-Z]
-STRING {LETTER|DIGIT}+
-
-VOID    "void"
-COMMENT ("//.*"|"/\*[.]*\*/")
-SETUP   "setup"
-OBRA    "("
-CBRA    ")"
-OCBRA   "{"
-CCBRA   "}"
-PRINT   "Serial.print"
+/*MUSTER*/
+/* Schlüsselwort */
+VOID    [^void$]
+SETUP   setup
+PRINT   Serial.print
 DWRITE  "digitalWrite"
 DREAD   "digitalRead"
 AWRITE  "analogWrite"
 AREAD   "analogRead"
-HIGH  "HIGH"
-LOW  "LOW"
 PINMODE "pinMode"
-INPUT  "INPUT"
-OUTPUT  "OUTPUT"
 CONST   "const"
 INT     "int"
 FLOAT   "float"
@@ -40,42 +23,65 @@ UNSIGNED "unsigned"
 CHAR    "char"
 SLEEP   "sleep"
 LOOP    "loop"
+HIGH  "HIGH"
+LOW  "LOW"
+INPUT  "INPUT"
+OUTPUT  "OUTPUT"
+/* Operatoren */
+OP [\+\*\/-]
+COMP [<>=]{1,2}
+/* Satzzeichensymbol */
+OBRA    "("
+CBRA    ")"
+OCBRA   "{"
+CCBRA   "}"
+SCOLON   ";"
+COMMA   ","
+COMMENT (\/*(\n)?.*(\n)?\/*|\/\/)
+/* Token für Konstanten */
+DIGIT  [0-9]
+DIGITS {DIGIT}+
+LETTER [a-zA-Z]
+STRING {LETTER|DIGIT}+
+
 SPACE " "+
+
+/* Bezeichner */
+ID       {LETTER}({LETTER}|{DIGIT})*
+NUM      {DIGIT}+(\.{DIGIT}+)?
 
 
 %%
 [ \t\n] {}
-{VOID}      {printf("void\n");}
-{INT}       {printf("int\n");}
-{FLOAT}     {printf("float\n");}
-{CHAR}      {printf("char\n");}
+{VOID}      {return "VOID";}
+{INT}       {return "INT";}
+{FLOAT}     {return "FLOAT";}
+{CHAR}      {return "CHAR";}
 
-{OBRA} {printf("open bracket");}
-{CBRA} {printf("closed bracket");}
-{OCBRA} {printf("open curly bracket");}
-{CCBRA} {printf("closed curly bracket");}
-"+"     {return '+';}
-"-"     {return '-';}
-"*"     {return '*';}
-"/"     {return '/';}
-";"     {printf("semicolon")}
+{OBRA} {return "OBRA";}
+{CBRA} {return "CBRA";}
+{OCBRA} {return "OBRA";}
+{CCBRA} {return "CCBRA";}
+{OP}    {yyval = yytext; return "OP";}
+{SCOLON}     {return "SCOLON";}
+{COMMA}     {return "COMMA";}
 
 
-{INPUT}       {printf("input");}
-{OUTPUT}    {printf("output");}
-{HIGH}      {printf("high");}
-{LOW}      {printf("low");}
+{INPUT}       {return "INPUT";}
+{OUTPUT}    {return "OUTPUT";}
+{HIGH}      {return "HIGH";}
+{LOW}      {return "LOW";}
 
-{PRINT} {printf("print: %s",yytext);}
-{DWRITE}    {printf("digitalWrite");}
-{PINMODE}       {printf("pinMode");}
-{SETUP}         {printf("setup\n");}
-{DREAD}  {printf("digitalRead");}
-{LOOP}  {printf("loop");}
-{SLEEP}  {printf("sleep");}
-{COMMENT}   {printf("comment");}
+{PRINT} {return "PRINT";}
+{DWRITE}    {return "DWRITE";}
+{PINMODE}       {return "PINMODE";}
+{SETUP}         {return "SETUP";}
+{DREAD}  {return "DREAD";}
+{LOOP}  {return "LOOP";}
+{SLEEP}  {return "SLEEP";}
+{COMMENT}   {yyval = yytext); return "COMMENT";}
 
-.*          {printf("else");}
+{ID}    {yyval = yytext; return "ID";}
 %%
 
 main()
