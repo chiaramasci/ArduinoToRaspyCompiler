@@ -7,7 +7,7 @@ int TokenCont=0;
 
 /*MUSTER*/
 /* Schlüsselwort */
-VOID    [^void$]
+VOID    void
 SETUP   setup
 PRINT   Serial.print
 DWRITE  "digitalWrite"
@@ -27,9 +27,11 @@ HIGH  "HIGH"
 LOW  "LOW"
 INPUT  "INPUT"
 OUTPUT  "OUTPUT"
+TYPE {VOID|INT|FLOAT|LONG|CHAR}
 /* Operatoren */
+EQ =
 OP [\+\*\/-]
-COMP [<>=]{1,2}
+COMP [<>{EQ}]{1,2}
 /* Satzzeichensymbol */
 OBRA    "("
 CBRA    ")"
@@ -53,18 +55,19 @@ NUM      {DIGIT}+(\.{DIGIT}+)?
 
 %%
 [ \t\n] {}
-{VOID}      {return "VOID";}
-{INT}       {return "INT";}
-{FLOAT}     {return "FLOAT";}
-{CHAR}      {return "CHAR";}
+{TYPE}  {yyval = yytext; return "TYPE";}
+{CONST}     {return "CONST";}
 
 {OBRA} {return "OBRA";}
 {CBRA} {return "CBRA";}
 {OCBRA} {return "OBRA";}
 {CCBRA} {return "CCBRA";}
 {OP}    {yyval = yytext; return "OP";}
+{EQ}    {return "=";}
 {SCOLON}     {return "SCOLON";}
 {COMMA}     {return "COMMA";}
+{STRING}   {yyval = yytext; return "STRING";}
+{NUM}   {yyval = atof(yytext); return "NUM";}
 
 
 {INPUT}       {return "INPUT";}
@@ -79,7 +82,7 @@ NUM      {DIGIT}+(\.{DIGIT}+)?
 {DREAD}  {return "DREAD";}
 {LOOP}  {return "LOOP";}
 {SLEEP}  {return "SLEEP";}
-{COMMENT}   {yyval = yytext); return "COMMENT";}
+{COMMENT}   {yyval = yytext; return "COMMENT";}
 
 {ID}    {yyval = yytext; return "ID";}
 %%
@@ -88,3 +91,4 @@ main()
 {
 yylex();
 }
+
