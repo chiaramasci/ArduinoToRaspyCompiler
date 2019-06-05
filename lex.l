@@ -21,13 +21,14 @@ FLOAT   "float"
 LONG   "long"
 UNSIGNED "unsigned"
 CHAR    "char"
-SLEEP   "sleep"
+SLEEP   "delay"
 LOOP    "loop"
 HIGH  "HIGH"
 LOW  "LOW"
 INPUT  "INPUT"
 OUTPUT  "OUTPUT"
 TYPE {VOID|INT|FLOAT|LONG|CHAR}
+CALLID {PRINT|DWRITE|DREAD|AWRITE|AREAD|PINMODE|SLEEP| ID}
 /* Operatoren */
 EQ =
 OP [\+\*\/-]
@@ -44,7 +45,7 @@ COMMENT (\/*(\n)?.*(\n)?\/*|\/\/)
 DIGIT  [0-9]
 DIGITS {DIGIT}+
 LETTER [a-zA-Z]
-STRING {LETTER|DIGIT}+
+STRING \"{LETTER|DIGIT}+\"
 
 SPACE " "+
 
@@ -75,13 +76,7 @@ NUM      {DIGIT}+(\.{DIGIT}+)?
 {HIGH}      {return "HIGH";}
 {LOW}      {return "LOW";}
 
-{PRINT} {return "PRINT";}
-{DWRITE}    {return "DWRITE";}
-{PINMODE}       {return "PINMODE";}
-{SETUP}         {return "SETUP";}
-{DREAD}  {return "DREAD";}
-{LOOP}  {return "LOOP";}
-{SLEEP}  {return "SLEEP";}
+{CALLID} {yyval = yytext; return "CALLID";}
 {COMMENT}   {yyval = yytext; return "COMMENT";}
 
 {ID}    {yyval = yytext; return "ID";}

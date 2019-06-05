@@ -1,0 +1,17 @@
+smts -> (cmd|cmt)*
+cmd -> variable|function
+
+variable -> (new|old)SCOLON
+new -> (CONST)? TYPE ID EQ (STRING|NUM)
+old -> ID EQ (STRING|NUM)
+
+
+fun -> def|(call SCOLON)
+call -> callid OBRA params CBRA
+callid -> CALLID
+params -> param | paramc+ param | /*empty*/
+param -> STRING|NUM
+paramc -> param COMMA
+
+def -> TYPE defid OBRA params CBRA OCBRA smts CCBRA
+defid -> SETUP | LOOP | ID

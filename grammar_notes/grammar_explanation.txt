@@ -1,0 +1,28 @@
+\\Statements(smts) can be either commands (cmd) or comments (cmt)
+smts -> (cmd|cmt)*
+
+\\A command(cmd) can be related to either assignment (new) and modifications (old) of variables(var) 
+\\or the call (call) or the definition (def) of a function (fun)
+cmd -> var|fun
+var -> (new|old)SCOLON
+fun -> def|(call SCOLON)
+
+\\const int nome = 60 
+new -> (CONST)? TYPE ID EQ (STRING|NUM)
+\\nome = 60
+old -> ID EQ (STRING|NUM)
+
+\\ nomefunzione(param, param)
+call -> callid OBRA params CBRA
+\\ the name of a called function can be custom (ID) or one of the predefined by Arduino (PRINT | DWRITE | DREAD | AWRITE | AREAD | PINMODE | SLEEP)
+\\the called functions are found thanks to the token CALLID
+callid -> CALLID
+
+\\the list of parameters inside of a function can be empty (/*empty*/), with only one (param) or more separated by commas (paramc+ param)
+params -> param | paramc+ param | /*empty*/
+param -> STRING|NUM
+paramc -> param COMMA
+
+\\void nomefunzione (param){...}
+def -> TYPE defid OBRA params CBRA OCBRA smts CCBRA
+defid -> SETUP | LOOP | ID

@@ -1,0 +1,49 @@
+smts -> (cmd|cmt)*
+cmd -> variable|function
+
+variable -> (new|old)SCOLON
+
+//for this one, you have to print: (const) type id = value 
+//const is present only if CONST is present
+// type is the yyval of TYPE, is the yyval of ID and value is the yyval of either STRING or NUM
+new -> (CONST)? TYPE ID EQ (STRING|NUM)
+
+//for this one, you have to print: id = value 
+//id is the yyval of ID, value is the yyval of either STRING or NUM
+old -> ID EQ (STRING|NUM)
+
+
+fun -> def|(call SCOLON)
+
+//for this one you have to returned: namefun ( params )
+//namefun is the value returned by callid
+//param is the value returned by params
+call -> callid OBRA params CBRA
+
+//what is returned in this situation, depends on the yyval of CALLID. Here are listed the possibilities that we will take into account
+//if yyval == Serial.print then print
+//if yyval == digitalWrite then GPIO.output
+//if yyval == digitalRead then GPIO.input
+//if yyval == delay then time.sleep
+//if yyval == pinMode then GPIO.setup
+//else then yyval
+callid -> CALLID
+
+//returns the value coming out from either param or paramc or empty
+params -> param | paramc+ param | /*empty*/
+//return yyval of STRING or of NUM
+param -> STRING|NUM
+//to the value returned by paramc is added , and then returned
+paramc -> param COMMA
+
+//in this case, it will be printed: def namefun (params){ statements } where
+//def is just the literal "def" 
+//namefun is the value that comes out from def
+//params is the value that comes out from params
+//statements is the value that comes from smts
+def -> TYPE defid OBRA params CBRA OCBRA smts CCBRA
+
+//if SETUP return "setup"
+//if LOOP return "loop"
+//if ID return the yyval of ID
+defid -> SETUP | LOOP | ID
