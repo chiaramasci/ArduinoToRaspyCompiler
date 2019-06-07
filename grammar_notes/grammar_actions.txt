@@ -46,4 +46,3 @@ def -> TYPE defid OBRA params CBRA OCBRA smts CCBRA
 //if SETUP return "setup"
 //if LOOP return "loop"
 //if ID return the yyval of ID
-defid -> SETUP | LOOP | ID
