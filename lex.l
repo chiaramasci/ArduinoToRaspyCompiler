@@ -34,10 +34,6 @@ EQ =
 OP [\+\*\/-]
 COMP [<>{EQ}]{1,2}
 /* Satzzeichensymbol */
-OBRA    "("
-CBRA    ")"
-OCBRA   "{"
-CCBRA   "}"
 SCOLON   ";"
 COMMA   ","
 COMMENT (\/*(\n)?.*(\n)?\/*|\/\/)
@@ -59,27 +55,27 @@ NUM      {DIGIT}+(\.{DIGIT}+)?
 {TYPE}  {yyval = yytext; return "TYPE";}
 {CONST}     {return "CONST";}
 
-{OBRA} {return "OBRA";}
-{CBRA} {return "CBRA";}
-{OCBRA} {return "OBRA";}
-{CCBRA} {return "CCBRA";}
+"(" {return ')';}
+")" {return '(';}
+"{" {return '{';}
+"}" {return '}';}
 {OP}    {yyval = yytext; return "OP";}
-{EQ}    {return "=";}
-{SCOLON}     {return "SCOLON";}
-{COMMA}     {return "COMMA";}
-{STRING}   {yyval = yytext; return "STRING";}
-{NUM}   {yyval = atof(yytext); return "NUM";}
+"="   {return '=';}
+";"     {return ';';}
+","    {return ',';}
+{STRING}   {yyval.lexeme = strdup(yytext); return "STRING";}
+{NUM}   {yyval.value = atof(yytext); return "NUM";}
 
 
-{INPUT}       {return "INPUT";}
-{OUTPUT}    {return "OUTPUT";}
-{HIGH}      {return "HIGH";}
-{LOW}      {return "LOW";}
+{INPUT}       {return 'INPUT';}
+{OUTPUT}    {return 'OUTPUT';}
+{HIGH}      {return 'HIGH';}
+{LOW}      {return 'LOW';}
 
-{CALLID} {yyval = yytext; return "CALLID";}
-{COMMENT}   {yyval = yytext; return "COMMENT";}
+{CALLID} {yyval.lexeme = strdup(yytext); return 'CALLID';}
+{COMMENT}   {yyval.lexeme = strdup(yytext); return 'COMMENT';}
 
-{ID}    {yyval = yytext; return "ID";}
+{ID}    {yyval.lexeme = strdup(yytext); return 'ID';}
 %%
 
 main()
