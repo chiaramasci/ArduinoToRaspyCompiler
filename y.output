@@ -1,0 +1,614 @@
+Terminals which are not used
+
+   INPUT
+   OUTPUT
+   HIGH
+   LOW
+   OP
+   INOUT
+   HILO
+   ''
+
+
+Grammar
+
+    0 $accept: stms $end
+
+    1 s: stms
+    2  | EMPTY
+
+    3 stms: cmd s
+    4     | COMMENT s
+
+    5 cmd: variable
+    6    | fun
+
+    7 variable: new ';'
+    8         | old ';'
+
+    9 type: STRING
+   10     | NUM
+
+   11 new: CONST TYPE ID '=' type
+   12    | TYPE ID '=' type
+
+   13 old: ID '=' type
+
+   14 fun: def
+   15    | call ';'
+
+   16 call: CALLID '(' params ')'
+
+   17 params: param
+   18       | paramc param
+   19       | EMPTY
+
+   20 paramc: param ',' l
+
+   21 l: paramc
+   22  | EMPTY
+
+   23 param: STRING
+   24      | NUM
+
+   25 defid: SETUP
+   26      | LOOP
+   27      | ID
+
+   28 def: TYPE defid '(' params ')' '{' stms '}'
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'' (39)
+'(' (40) 16 28
+')' (41) 16 28
+',' (44) 20
+';' (59) 7 8 15
+'=' (61) 11 12 13
+'{' (123) 28
+'}' (125) 28
+error (256)
+ID (258) 11 12 13 27
+STRING (259) 9 23
+COMMENT (260) 4
+TYPE (261) 11 12 28
+CALLID (262) 16
+INPUT (263)
+OUTPUT (264)
+HIGH (265)
+LOW (266)
+SETUP (267) 25
+LOOP (268) 26
+CONST (269) 11
+OP (270)
+INOUT (271)
+HILO (272)
+NUM (273) 10 24
+EMPTY (274) 2 19 22
+
+
+Nonterminals, with rules where they appear
+
+$accept (28)
+    on left: 0
+s (29)
+    on left: 1 2, on right: 3 4
+stms (30)
+    on left: 3 4, on right: 0 1 28
+cmd (31)
+    on left: 5 6, on right: 3
+variable (32)
+    on left: 7 8, on right: 5
+type (33)
+    on left: 9 10, on right: 11 12 13
+new (34)
+    on left: 11 12, on right: 7
+old (35)
+    on left: 13, on right: 8
+fun (36)
+    on left: 14 15, on right: 6
+call (37)
+    on left: 16, on right: 15
+params (38)
+    on left: 17 18 19, on right: 16 28
+paramc (39)
+    on left: 20, on right: 18 21
+l (40)
+    on left: 21 22, on right: 20
+param (41)
+    on left: 23 24, on right: 17 18 20
+defid (42)
+    on left: 25 26 27, on right: 28
+def (43)
+    on left: 28, on right: 14
+
+
+state 0
+
+    0 $accept: . stms $end
+
+    ID       shift, and go to state 1
+    COMMENT  shift, and go to state 2
+    TYPE     shift, and go to state 3
+    CALLID   shift, and go to state 4
+    CONST    shift, and go to state 5
+
+    stms      go to state 6
+    cmd       go to state 7
+    variable  go to state 8
+    new       go to state 9
+    old       go to state 10
+    fun       go to state 11
+    call      go to state 12
+    def       go to state 13
+
+
+state 1
+
+   13 old: ID . '=' type
+
+    '='  shift, and go to state 14
+
+
+state 2
+
+    4 stms: COMMENT . s
+
+    ID       shift, and go to state 1
+    COMMENT  shift, and go to state 2
+    TYPE     shift, and go to state 3
+    CALLID   shift, and go to state 4
+    CONST    shift, and go to state 5
+    EMPTY    shift, and go to state 15
+
+    s         go to state 16
+    stms      go to state 17
+    cmd       go to state 7
+    variable  go to state 8
+    new       go to state 9
+    old       go to state 10
+    fun       go to state 11
+    call      go to state 12
+    def       go to state 13
+
+
+state 3
+
+   12 new: TYPE . ID '=' type
+   28 def: TYPE . defid '(' params ')' '{' stms '}'
+
+    ID     shift, and go to state 18
+    SETUP  shift, and go to state 19
+    LOOP   shift, and go to state 20
+
+    defid  go to state 21
+
+
+state 4
+
+   16 call: CALLID . '(' params ')'
+
+    '('  shift, and go to state 22
+
+
+state 5
+
+   11 new: CONST . TYPE ID '=' type
+
+    TYPE  shift, and go to state 23
+
+
+state 6
+
+    0 $accept: stms . $end
+
+    $end  shift, and go to state 24
+
+
+state 7
+
+    3 stms: cmd . s
+
+    ID       shift, and go to state 1
+    COMMENT  shift, and go to state 2
+    TYPE     shift, and go to state 3
+    CALLID   shift, and go to state 4
+    CONST    shift, and go to state 5
+    EMPTY    shift, and go to state 15
+
+    s         go to state 25
+    stms      go to state 17
+    cmd       go to state 7
+    variable  go to state 8
+    new       go to state 9
+    old       go to state 10
+    fun       go to state 11
+    call      go to state 12
+    def       go to state 13
+
+
+state 8
+
+    5 cmd: variable .
+
+    $default  reduce using rule 5 (cmd)
+
+
+state 9
+
+    7 variable: new . ';'
+
+    ';'  shift, and go to state 26
+
+
+state 10
+
+    8 variable: old . ';'
+
+    ';'  shift, and go to state 27
+
+
+state 11
+
+    6 cmd: fun .
+
+    $default  reduce using rule 6 (cmd)
+
+
+state 12
+
+   15 fun: call . ';'
+
+    ';'  shift, and go to state 28
+
+
+state 13
+
+   14 fun: def .
+
+    $default  reduce using rule 14 (fun)
+
+
+state 14
+
+   13 old: ID '=' . type
+
+    STRING  shift, and go to state 29
+    NUM     shift, and go to state 30
+
+    type  go to state 31
+
+
+state 15
+
+    2 s: EMPTY .
+
+    $default  reduce using rule 2 (s)
+
+
+state 16
+
+    4 stms: COMMENT s .
+
+    $default  reduce using rule 4 (stms)
+
+
+state 17
+
+    1 s: stms .
+
+    $default  reduce using rule 1 (s)
+
+
+state 18
+
+   12 new: TYPE ID . '=' type
+   27 defid: ID .
+
+    '='  shift, and go to state 32
+
+    $default  reduce using rule 27 (defid)
+
+
+state 19
+
+   25 defid: SETUP .
+
+    $default  reduce using rule 25 (defid)
+
+
+state 20
+
+   26 defid: LOOP .
+
+    $default  reduce using rule 26 (defid)
+
+
+state 21
+
+   28 def: TYPE defid . '(' params ')' '{' stms '}'
+
+    '('  shift, and go to state 33
+
+
+state 22
+
+   16 call: CALLID '(' . params ')'
+
+    STRING  shift, and go to state 34
+    NUM     shift, and go to state 35
+    EMPTY   shift, and go to state 36
+
+    params  go to state 37
+    paramc  go to state 38
+    param   go to state 39
+
+
+state 23
+
+   11 new: CONST TYPE . ID '=' type
+
+    ID  shift, and go to state 40
+
+
+state 24
+
+    0 $accept: stms $end .
+
+    $default  accept
+
+
+state 25
+
+    3 stms: cmd s .
+
+    $default  reduce using rule 3 (stms)
+
+
+state 26
+
+    7 variable: new ';' .
+
+    $default  reduce using rule 7 (variable)
+
+
+state 27
+
+    8 variable: old ';' .
+
+    $default  reduce using rule 8 (variable)
+
+
+state 28
+
+   15 fun: call ';' .
+
+    $default  reduce using rule 15 (fun)
+
+
+state 29
+
+    9 type: STRING .
+
+    $default  reduce using rule 9 (type)
+
+
+state 30
+
+   10 type: NUM .
+
+    $default  reduce using rule 10 (type)
+
+
+state 31
+
+   13 old: ID '=' type .
+
+    $default  reduce using rule 13 (old)
+
+
+state 32
+
+   12 new: TYPE ID '=' . type
+
+    STRING  shift, and go to state 29
+    NUM     shift, and go to state 30
+
+    type  go to state 41
+
+
+state 33
+
+   28 def: TYPE defid '(' . params ')' '{' stms '}'
+
+    STRING  shift, and go to state 34
+    NUM     shift, and go to state 35
+    EMPTY   shift, and go to state 36
+
+    params  go to state 42
+    paramc  go to state 38
+    param   go to state 39
+
+
+state 34
+
+   23 param: STRING .
+
+    $default  reduce using rule 23 (param)
+
+
+state 35
+
+   24 param: NUM .
+
+    $default  reduce using rule 24 (param)
+
+
+state 36
+
+   19 params: EMPTY .
+
+    $default  reduce using rule 19 (params)
+
+
+state 37
+
+   16 call: CALLID '(' params . ')'
+
+    ')'  shift, and go to state 43
+
+
+state 38
+
+   18 params: paramc . param
+
+    STRING  shift, and go to state 34
+    NUM     shift, and go to state 35
+
+    param  go to state 44
+
+
+state 39
+
+   17 params: param .
+   20 paramc: param . ',' l
+
+    ','  shift, and go to state 45
+
+    $default  reduce using rule 17 (params)
+
+
+state 40
+
+   11 new: CONST TYPE ID . '=' type
+
+    '='  shift, and go to state 46
+
+
+state 41
+
+   12 new: TYPE ID '=' type .
+
+    $default  reduce using rule 12 (new)
+
+
+state 42
+
+   28 def: TYPE defid '(' params . ')' '{' stms '}'
+
+    ')'  shift, and go to state 47
+
+
+state 43
+
+   16 call: CALLID '(' params ')' .
+
+    $default  reduce using rule 16 (call)
+
+
+state 44
+
+   18 params: paramc param .
+
+    $default  reduce using rule 18 (params)
+
+
+state 45
+
+   20 paramc: param ',' . l
+
+    STRING  shift, and go to state 34
+    NUM     shift, and go to state 35
+    EMPTY   shift, and go to state 48
+
+    paramc  go to state 49
+    l       go to state 50
+    param   go to state 51
+
+
+state 46
+
+   11 new: CONST TYPE ID '=' . type
+
+    STRING  shift, and go to state 29
+    NUM     shift, and go to state 30
+
+    type  go to state 52
+
+
+state 47
+
+   28 def: TYPE defid '(' params ')' . '{' stms '}'
+
+    '{'  shift, and go to state 53
+
+
+state 48
+
+   22 l: EMPTY .
+
+    $default  reduce using rule 22 (l)
+
+
+state 49
+
+   21 l: paramc .
+
+    $default  reduce using rule 21 (l)
+
+
+state 50
+
+   20 paramc: param ',' l .
+
+    $default  reduce using rule 20 (paramc)
+
+
+state 51
+
+   20 paramc: param . ',' l
+
+    ','  shift, and go to state 45
+
+
+state 52
+
+   11 new: CONST TYPE ID '=' type .
+
+    $default  reduce using rule 11 (new)
+
+
+state 53
+
+   28 def: TYPE defid '(' params ')' '{' . stms '}'
+
+    ID       shift, and go to state 1
+    COMMENT  shift, and go to state 2
+    TYPE     shift, and go to state 3
+    CALLID   shift, and go to state 4
+    CONST    shift, and go to state 5
+
+    stms      go to state 54
+    cmd       go to state 7
+    variable  go to state 8
+    new       go to state 9
+    old       go to state 10
+    fun       go to state 11
+    call      go to state 12
+    def       go to state 13
+
+
+state 54
+
+   28 def: TYPE defid '(' params ')' '{' stms . '}'
+
+    '}'  shift, and go to state 55
+
+
+state 55
+
+   28 def: TYPE defid '(' params ')' '{' stms '}' .
+
+    $default  reduce using rule 28 (def)
