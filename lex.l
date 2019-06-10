@@ -25,8 +25,10 @@ SLEEP   "delay"
 LOOP    "loop"
 HIGH  "HIGH"
 LOW  "LOW"
+HILO {HIGH|LOW}
 INPUT  "INPUT"
 OUTPUT  "OUTPUT"
+INOUT {INPUT|OUTPUT}
 TYPE {VOID|INT|FLOAT|LONG|CHAR}
 CALLID {PRINT|DWRITE|DREAD|AWRITE|AREAD|PINMODE|SLEEP| ID}
 /* Operatoren */
@@ -52,8 +54,8 @@ NUM      {DIGIT}+(\.{DIGIT}+)?
 
 %%
 [ \t\n] {}
-{TYPE}  {yyval = yytext; return "TYPE";}
-{CONST}     {return "CONST";}
+{TYPE}  {yyval.lexeme = strdup(yytext); return 'TYPE';}
+{CONST}     {return 'CONST';}
 
 "(" {return ')';}
 ")" {return '(';}
@@ -67,10 +69,9 @@ NUM      {DIGIT}+(\.{DIGIT}+)?
 {NUM}   {yyval.value = atof(yytext); return "NUM";}
 
 
-{INPUT}       {return 'INPUT';}
-{OUTPUT}    {return 'OUTPUT';}
-{HIGH}      {return 'HIGH';}
-{LOW}      {return 'LOW';}
+{INOUT}       {yyval.lexeme = strdup(yytext),return 'INOUT';}
+{HILO}      {yyval.lexeme = strdup(yytext),return 'HILO';}
+
 
 {CALLID} {yyval.lexeme = strdup(yytext); return 'CALLID';}
 {COMMENT}   {yyval.lexeme = strdup(yytext); return 'COMMENT';}

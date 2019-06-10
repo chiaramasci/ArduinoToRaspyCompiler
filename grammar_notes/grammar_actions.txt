@@ -1,24 +1,39 @@
-smts -> (cmd|cmt)*
-cmd -> variable|function
+//%% add $$ to the second stms
 
-variable -> (new|old)SCOLON
+stms: cmd   {fprintf(f, "%s\n", $1); exit(0);} 
+    | COMMENT {fprintf(f, "%s\n", $1); exit(0);} 
+    | cmd stms {fprintf(f, "%s\n", $1);} 
+    | COMMENT stms {fprintf(f, "%s\n", $1);} 
+
+cmd:   variable {$$=$1;}
+    | function  {$$=$1;}
+
+variable:
+    |new ';' {$$=$1;}
+    |old ';' {$$=$1;}
 
 //for this one, you have to print: (const) type id = value 
 //const is present only if CONST is present
 // type is the yyval of TYPE, is the yyval of ID and value is the yyval of either STRING or NUM
-new -> (CONST)? TYPE ID EQ (STRING|NUM)
+
+//%% strcat only two. Add auxiliary function
+new : 
+    | CONST TYPE ID '=' STRING {$$=strcat(toUpper($3),'=',$5);}
+    | CONST TYPE ID '=' NUM    {$$=strcat(toUpper($3),'=',$5);}
 
 //for this one, you have to print: id = value 
 //id is the yyval of ID, value is the yyval of either STRING or NUM
-old -> ID EQ (STRING|NUM)
+old: ID '=' STRING {$$=strcat(toUpper($1),'=',$3);}
 
 
-fun -> def|(call SCOLON)
+fun: 
+    |def {$$ = $1;}
+    |call ';' {$$ = $1;}
 
 //for this one you have to returned: namefun ( params )
 //namefun is the value returned by callid
 //param is the value returned by params
-call -> callid OBRA params CBRA
+call: callid '(' params ')' {$$ = strcat($1,'(',$3,')');}
 
 //what is returned in this situation, depends on the yyval of CALLID. Here are listed the possibilities that we will take into account
 //if yyval == Serial.print then print
@@ -30,11 +45,16 @@ call -> callid OBRA params CBRA
 callid -> CALLID
 
 //returns the value coming out from either param or paramc or empty
-params -> param | paramc+ param | /*empty*/
+params: param {$$ = $1;}
+        | paramc param {$$ = strcat($1,$2)}
+        | /*empty*/ {$$ = ''}
+
 //return yyval of STRING or of NUM
-param -> STRING|NUM
+param: STRING
+    |NUM
 //to the value returned by paramc is added , and then returned
-paramc -> param COMMA
+paramc: param COMMA
+        | paramc param
 
 //in this case, it will be printed: def namefun (params){ statements } where
 //def is just the literal "def" 
