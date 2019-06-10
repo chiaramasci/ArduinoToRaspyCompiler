@@ -1,8 +1,7 @@
 #include <stdio.h>
 
 #include <string.h>
-
-char[] func(char str[])
+void func(char str[])
 {
 
     /* To print string in upperCase*/
@@ -19,10 +18,7 @@ void concatenate(char first[], char second[], char third[])
     char result[100];
 
     strcpy(result, first);
-    strcat(result, "puzzi ");
     strcat(result, second);
-    strcat(result, " ");
-    strcat(result, "Third ");
     strcat(result, third);
 
     printf("%s", result);
@@ -30,20 +26,14 @@ void concatenate(char first[], char second[], char third[])
 
 void main()
 {
-    char result[100];    // Make sure you have enough space (don't forget the null)
-    char second[] = " "; // Array initialisation in disguise
-    char fourth[] = " ";
 
-    //strcpy(result, "First string ");
-    //strcat(result, "puzzi ");
-    //strcat(result, second);
-    //strcat(result, " ");
-    //strcat(result, "Third ");
-    //strcat(result, fourth);
+    char str[100];
+
+    char result[100];
     char a[] = "ciao";
     char b[] = "so";
     char c[] = "parlare";
-    //printf("%s", result);
-    char boh[] = func(a);
-    concatenate(boh, b, c);
+    concatenate(a, b, c);
+
+    func(result);
 }
