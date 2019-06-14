@@ -15,48 +15,44 @@
 /* ehm */
 %left error
 
-%type <lexeme> stms def_func func_body pinMode action_cmd body
+%type <lexeme> stms def_func func_body pinMode action_cmd body comment
 %start stms
 %%
-stms:   COMMENT body    {
+stms:   comment body    {
                             //printf("stms %s\n", $1);
                             char* c = $1;
                             char* comment = malloc(200);
                             strncpy(comment, c+2, 200);
 
-                            printf("# %s\n %s", comment, $2);
+                            //printf("# %s\n", comment, $2);
                                         
                         };
 
-body:  def_func body   {       
-                            //printf("body\n");
-                            char outbuf[600];
-                            snprintf(outbuf, sizeof(outbuf), " %s \n", $2);
-                            $$ = outbuf;
-                        }
-        | def_func {
-                        char outbuf[600];
-                        snprintf(outbuf, sizeof(outbuf), " %s \n", $1);
-                        $$ = outbuf;
-                    };
+comment: COMMENT {char* c = $1;
+                char* comment = malloc(200);
+                strncpy(comment, c+2, 200);
+                printf("# %s \n",comment);
+                };
 
-def_func: VOID DEFAULT_FUNC '(' ')' '{' func_body '}'   {
-                                                           // printf("def_func %s %s\n", $1, $2);
-                                                            char outbuf[900];
-                                                            snprintf(outbuf, sizeof(outbuf), "def %s (): \n %s", $2, $6);
-                                                            $$ = outbuf;
-                                                        };
+body:  def_func def_func   {       
+
+                        };
+
+def_func: VOID DEFAULT_FUNC {char outbuf[900];
+                            snprintf(outbuf, sizeof(outbuf), "def %s (): \n ", $2);
+                            printf("%s\n", outbuf);} 
+        '(' ')' '{' func_body '}'   { };
 
 func_body: action_cmd func_body {
-                                    //printf("func_body 1\n");
-                                    char *str = (char*) malloc(strlen($1) + strlen($2) + 1);
-                                    strcpy(str, $1);
-                                    strcat(str, $2);
-                                    $$ = str;
+                                    
+                                    // char *str = (char*) malloc(strlen($1) + strlen($2) + 1);
+                                    // strcpy(str, $1);
+                                    // strcat(str, $2);
+                                    // $$ = str;
                                 }
             
            | action_cmd { 
-               $$=$1;
+            //    $$=$1;
            };
 
 action_cmd: pinMode {
@@ -64,7 +60,6 @@ action_cmd: pinMode {
                     };
 
 pinMode: PINMODE '(' NUM ',' MODE ')' ';'   {
-                                                //printf("pinmode %s %s %s\n", $1, $3, $5);
                                                 char outbuf[100];
                                                 char* mode = malloc(20);
                                                 if($5 == "INPUT"){
@@ -73,7 +68,8 @@ pinMode: PINMODE '(' NUM ',' MODE ')' ';'   {
                                                 mode = "GPIO.OUT"; 
                                                 }
                                                 snprintf(outbuf, sizeof(outbuf), "\t GPIO.setup(%s,%s) \n", $3, mode);
-                                                $$ = outbuf;
+                                                printf("%s",outbuf);
+                                                // $$ = outbuf;
                                             };
 %%
 

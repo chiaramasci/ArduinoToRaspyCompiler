@@ -2,37 +2,40 @@ Grammar
 
     0 $accept: stms $end
 
-    1 stms: COMMENT body
+    1 stms: comment body
 
-    2 body: def_func body
-    3     | def_func
+    2 comment: COMMENT
 
-    4 def_func: VOID DEFAULT_FUNC '(' ')' '{' func_body '}'
+    3 body: def_func def_func
 
-    5 func_body: action_cmd func_body
-    6          | action_cmd
+    4 @1: /* empty */
 
-    7 action_cmd: pinMode
+    5 def_func: VOID DEFAULT_FUNC @1 '(' ')' '{' func_body '}'
 
-    8 pinMode: PINMODE '(' NUM ',' MODE ')' ';'
+    6 func_body: action_cmd func_body
+    7          | action_cmd
+
+    8 action_cmd: pinMode
+
+    9 pinMode: PINMODE '(' NUM ',' MODE ')' ';'
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
-'(' (40) 4 8
-')' (41) 4 8
-',' (44) 8
-';' (59) 8
-'{' (123) 4
-'}' (125) 4
+'(' (40) 5 9
+')' (41) 5 9
+',' (44) 9
+';' (59) 9
+'{' (123) 5
+'}' (125) 5
 error (256)
-COMMENT (258) 1
-DEFAULT_FUNC (259) 4
-VOID (260) 4
-PINMODE (261) 8
-MODE (262) 8
-NUM (263) 8
+COMMENT (258) 2
+DEFAULT_FUNC (259) 5
+VOID (260) 5
+PINMODE (261) 9
+MODE (262) 9
+NUM (263) 9
 
 
 Nonterminals, with rules where they appear
@@ -41,16 +44,20 @@ $accept (15)
     on left: 0
 stms (16)
     on left: 1, on right: 0
-body (17)
-    on left: 2 3, on right: 1 2
-def_func (18)
-    on left: 4, on right: 2 3
-func_body (19)
-    on left: 5 6, on right: 4 5
-action_cmd (20)
-    on left: 7, on right: 5 6
-pinMode (21)
-    on left: 8, on right: 7
+comment (17)
+    on left: 2, on right: 1
+body (18)
+    on left: 3, on right: 1
+def_func (19)
+    on left: 5, on right: 3
+@1 (20)
+    on left: 4, on right: 5
+func_body (21)
+    on left: 6 7, on right: 5 6
+action_cmd (22)
+    on left: 8, on right: 6 7
+pinMode (23)
+    on left: 9, on right: 8
 
 
 state 0
@@ -59,185 +66,198 @@ state 0
 
     COMMENT  shift, and go to state 1
 
-    stms  go to state 2
+    stms     go to state 2
+    comment  go to state 3
 
 
 state 1
 
-    1 stms: COMMENT . body
+    2 comment: COMMENT .
 
-    VOID  shift, and go to state 3
-
-    body      go to state 4
-    def_func  go to state 5
+    $default  reduce using rule 2 (comment)
 
 
 state 2
 
     0 $accept: stms . $end
 
-    $end  shift, and go to state 6
+    $end  shift, and go to state 4
 
 
 state 3
 
-    4 def_func: VOID . DEFAULT_FUNC '(' ')' '{' func_body '}'
+    1 stms: comment . body
 
-    DEFAULT_FUNC  shift, and go to state 7
+    VOID  shift, and go to state 5
+
+    body      go to state 6
+    def_func  go to state 7
 
 
 state 4
-
-    1 stms: COMMENT body .
-
-    $default  reduce using rule 1 (stms)
-
-
-state 5
-
-    2 body: def_func . body
-    3     | def_func .
-
-    VOID  shift, and go to state 3
-
-    $default  reduce using rule 3 (body)
-
-    body      go to state 8
-    def_func  go to state 5
-
-
-state 6
 
     0 $accept: stms $end .
 
     $default  accept
 
 
+state 5
+
+    5 def_func: VOID . DEFAULT_FUNC @1 '(' ')' '{' func_body '}'
+
+    DEFAULT_FUNC  shift, and go to state 8
+
+
+state 6
+
+    1 stms: comment body .
+
+    $default  reduce using rule 1 (stms)
+
+
 state 7
 
-    4 def_func: VOID DEFAULT_FUNC . '(' ')' '{' func_body '}'
+    3 body: def_func . def_func
 
-    '('  shift, and go to state 9
+    VOID  shift, and go to state 5
+
+    def_func  go to state 9
 
 
 state 8
 
-    2 body: def_func body .
+    5 def_func: VOID DEFAULT_FUNC . @1 '(' ')' '{' func_body '}'
 
-    $default  reduce using rule 2 (body)
+    $default  reduce using rule 4 (@1)
+
+    @1  go to state 10
 
 
 state 9
 
-    4 def_func: VOID DEFAULT_FUNC '(' . ')' '{' func_body '}'
+    3 body: def_func def_func .
 
-    ')'  shift, and go to state 10
+    $default  reduce using rule 3 (body)
 
 
 state 10
 
-    4 def_func: VOID DEFAULT_FUNC '(' ')' . '{' func_body '}'
+    5 def_func: VOID DEFAULT_FUNC @1 . '(' ')' '{' func_body '}'
 
-    '{'  shift, and go to state 11
+    '('  shift, and go to state 11
 
 
 state 11
 
-    4 def_func: VOID DEFAULT_FUNC '(' ')' '{' . func_body '}'
+    5 def_func: VOID DEFAULT_FUNC @1 '(' . ')' '{' func_body '}'
 
-    PINMODE  shift, and go to state 12
-
-    func_body   go to state 13
-    action_cmd  go to state 14
-    pinMode     go to state 15
+    ')'  shift, and go to state 12
 
 
 state 12
 
-    8 pinMode: PINMODE . '(' NUM ',' MODE ')' ';'
+    5 def_func: VOID DEFAULT_FUNC @1 '(' ')' . '{' func_body '}'
 
-    '('  shift, and go to state 16
+    '{'  shift, and go to state 13
 
 
 state 13
 
-    4 def_func: VOID DEFAULT_FUNC '(' ')' '{' func_body . '}'
+    5 def_func: VOID DEFAULT_FUNC @1 '(' ')' '{' . func_body '}'
 
-    '}'  shift, and go to state 17
+    PINMODE  shift, and go to state 14
+
+    func_body   go to state 15
+    action_cmd  go to state 16
+    pinMode     go to state 17
 
 
 state 14
 
-    5 func_body: action_cmd . func_body
-    6          | action_cmd .
+    9 pinMode: PINMODE . '(' NUM ',' MODE ')' ';'
 
-    PINMODE  shift, and go to state 12
-
-    $default  reduce using rule 6 (func_body)
-
-    func_body   go to state 18
-    action_cmd  go to state 14
-    pinMode     go to state 15
+    '('  shift, and go to state 18
 
 
 state 15
 
-    7 action_cmd: pinMode .
+    5 def_func: VOID DEFAULT_FUNC @1 '(' ')' '{' func_body . '}'
 
-    $default  reduce using rule 7 (action_cmd)
+    '}'  shift, and go to state 19
 
 
 state 16
 
-    8 pinMode: PINMODE '(' . NUM ',' MODE ')' ';'
+    6 func_body: action_cmd . func_body
+    7          | action_cmd .
 
-    NUM  shift, and go to state 19
+    PINMODE  shift, and go to state 14
+
+    $default  reduce using rule 7 (func_body)
+
+    func_body   go to state 20
+    action_cmd  go to state 16
+    pinMode     go to state 17
 
 
 state 17
 
-    4 def_func: VOID DEFAULT_FUNC '(' ')' '{' func_body '}' .
+    8 action_cmd: pinMode .
 
-    $default  reduce using rule 4 (def_func)
+    $default  reduce using rule 8 (action_cmd)
 
 
 state 18
 
-    5 func_body: action_cmd func_body .
+    9 pinMode: PINMODE '(' . NUM ',' MODE ')' ';'
 
-    $default  reduce using rule 5 (func_body)
+    NUM  shift, and go to state 21
 
 
 state 19
 
-    8 pinMode: PINMODE '(' NUM . ',' MODE ')' ';'
+    5 def_func: VOID DEFAULT_FUNC @1 '(' ')' '{' func_body '}' .
 
-    ','  shift, and go to state 20
+    $default  reduce using rule 5 (def_func)
 
 
 state 20
 
-    8 pinMode: PINMODE '(' NUM ',' . MODE ')' ';'
+    6 func_body: action_cmd func_body .
 
-    MODE  shift, and go to state 21
+    $default  reduce using rule 6 (func_body)
 
 
 state 21
 
-    8 pinMode: PINMODE '(' NUM ',' MODE . ')' ';'
+    9 pinMode: PINMODE '(' NUM . ',' MODE ')' ';'
 
-    ')'  shift, and go to state 22
+    ','  shift, and go to state 22
 
 
 state 22
 
-    8 pinMode: PINMODE '(' NUM ',' MODE ')' . ';'
+    9 pinMode: PINMODE '(' NUM ',' . MODE ')' ';'
 
-    ';'  shift, and go to state 23
+    MODE  shift, and go to state 23
 
 
 state 23
 
-    8 pinMode: PINMODE '(' NUM ',' MODE ')' ';' .
+    9 pinMode: PINMODE '(' NUM ',' MODE . ')' ';'
 
-    $default  reduce using rule 8 (pinMode)
+    ')'  shift, and go to state 24
+
+
+state 24
+
+    9 pinMode: PINMODE '(' NUM ',' MODE ')' . ';'
+
+    ';'  shift, and go to state 25
+
+
+state 25
+
+    9 pinMode: PINMODE '(' NUM ',' MODE ')' ';' .
+
+    $default  reduce using rule 9 (pinMode)

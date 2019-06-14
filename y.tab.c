@@ -347,18 +347,18 @@ union yyalloc
 #endif
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  6
+#define YYFINAL  4
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   22
+#define YYLAST   25
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  15
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  7
+#define YYNNTS  9
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  9
+#define YYNRULES  10
 /* YYNRULES -- Number of states.  */
-#define YYNSTATES  24
+#define YYNSTATES  26
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
@@ -404,22 +404,24 @@ static const yytype_uint8 yytranslate[] =
    YYRHS.  */
 static const yytype_uint8 yyprhs[] =
 {
-       0,     0,     3,     6,     9,    11,    19,    22,    24,    26
+       0,     0,     3,     6,     8,    11,    12,    21,    24,    26,
+      28
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
 static const yytype_int8 yyrhs[] =
 {
-      16,     0,    -1,     3,    17,    -1,    18,    17,    -1,    18,
-      -1,     5,     4,     9,    10,    11,    19,    12,    -1,    20,
-      19,    -1,    20,    -1,    21,    -1,     6,     9,     8,    13,
-       7,    10,    14,    -1
+      16,     0,    -1,    17,    18,    -1,     3,    -1,    19,    19,
+      -1,    -1,     5,     4,    20,     9,    10,    11,    21,    12,
+      -1,    22,    21,    -1,    22,    -1,    23,    -1,     6,     9,
+       8,    13,     7,    10,    14,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    21,    21,    31,    37,    43,    50,    58,    62,    66
+       0,    21,    21,    31,    37,    41,    41,    46,    54,    58,
+      62
 };
 #endif
 
@@ -430,8 +432,8 @@ static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "COMMENT", "DEFAULT_FUNC", "VOID",
   "PINMODE", "MODE", "NUM", "'('", "')'", "'{'", "'}'", "','", "';'",
-  "$accept", "stms", "body", "def_func", "func_body", "action_cmd",
-  "pinMode", 0
+  "$accept", "stms", "comment", "body", "def_func", "@1", "func_body",
+  "action_cmd", "pinMode", 0
 };
 #endif
 
@@ -448,13 +450,15 @@ static const yytype_uint16 yytoknum[] =
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    15,    16,    17,    17,    18,    19,    19,    20,    21
+       0,    15,    16,    17,    18,    20,    19,    21,    21,    22,
+      23
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     2,     2,     1,     7,     2,     1,     1,     7
+       0,     2,     2,     1,     2,     0,     8,     2,     1,     1,
+       7
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -462,15 +466,15 @@ static const yytype_uint8 yyr2[] =
    means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       0,     0,     0,     0,     2,     4,     1,     0,     3,     0,
-       0,     0,     0,     0,     7,     8,     0,     5,     6,     0,
-       0,     0,     0,     9
+       0,     3,     0,     0,     1,     0,     2,     0,     5,     4,
+       0,     0,     0,     0,     0,     0,     8,     9,     0,     6,
+       7,     0,     0,     0,     0,    10
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     2,     4,     5,    13,    14,    15
+      -1,     2,     3,     6,     7,    10,    15,    16,    17
 };
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
@@ -478,15 +482,15 @@ static const yytype_int8 yydefgoto[] =
 #define YYPACT_NINF -8
 static const yytype_int8 yypact[] =
 {
-      -3,    -4,     2,    -1,    -8,    -4,    -8,    -5,    -8,    -2,
-      -6,     0,     1,     3,     0,    -8,     4,    -8,    -8,     5,
-       6,     7,    -7,    -8
+      -3,    -8,     1,    -2,    -8,     0,    -8,    -2,    -8,    -8,
+      -7,    -5,    -4,     2,     3,    -6,     2,    -8,     5,    -8,
+      -8,     4,     7,    -1,     6,    -8
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -8,    -8,     9,    -8,     8,    -8,    -8
+      -8,    -8,    -8,    -8,     8,    -8,     9,    -8,    -8
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -496,25 +500,25 @@ static const yytype_int8 yypgoto[] =
 #define YYTABLE_NINF -1
 static const yytype_uint8 yytable[] =
 {
-       1,     3,     6,     7,     9,    11,    12,    23,    10,     0,
-      16,     0,    19,    21,     8,    17,     0,    22,    20,     0,
-       0,     0,    18
+       1,     4,    11,     5,     8,    12,    19,    13,    14,    24,
+       0,     0,    18,    21,    23,     9,     0,    22,     0,     0,
+      25,     0,     0,     0,     0,    20
 };
 
 static const yytype_int8 yycheck[] =
 {
-       3,     5,     0,     4,     9,    11,     6,    14,    10,    -1,
-       9,    -1,     8,     7,     5,    12,    -1,    10,    13,    -1,
-      -1,    -1,    14
+       3,     0,     9,     5,     4,    10,    12,    11,     6,    10,
+      -1,    -1,     9,     8,     7,     7,    -1,    13,    -1,    -1,
+      14,    -1,    -1,    -1,    -1,    16
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     3,    16,     5,    17,    18,     0,     4,    17,     9,
-      10,    11,     6,    19,    20,    21,     9,    12,    19,     8,
-      13,     7,    10,    14
+       0,     3,    16,    17,     0,     5,    18,    19,     4,    19,
+      20,     9,    10,    11,     6,    21,    22,    23,     9,    12,
+      21,     8,    13,     7,    10,    14
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -1336,69 +1340,67 @@ yyreduce:
                             char* comment = malloc(200);
                             strncpy(comment, c+2, 200);
 
-                            printf("# %s\n %s", comment, (yyvsp[(2) - (2)].lexeme));
+                            //printf("# %s\n", comment, $2);
                                         
                         }
     break;
 
   case 3:
 #line 31 "yacc.y"
-    {       
-                            //printf("body\n");
-                            char outbuf[600];
-                            snprintf(outbuf, sizeof(outbuf), " %s \n", (yyvsp[(2) - (2)].lexeme));
-                            (yyval.lexeme) = outbuf;
-                        }
+    {char* c = (yyvsp[(1) - (1)].lexeme);
+                char* comment = malloc(200);
+                strncpy(comment, c+2, 200);
+                printf("# %s \n",comment);
+                }
     break;
 
   case 4:
 #line 37 "yacc.y"
-    {
-                        char outbuf[600];
-                        snprintf(outbuf, sizeof(outbuf), " %s \n", (yyvsp[(1) - (1)].lexeme));
-                        (yyval.lexeme) = outbuf;
-                    }
+    {       
+
+                        }
     break;
 
   case 5:
-#line 43 "yacc.y"
-    {
-                                                           // printf("def_func %s %s\n", $1, $2);
-                                                            char outbuf[900];
-                                                            snprintf(outbuf, sizeof(outbuf), "def %s (): \n %s", (yyvsp[(2) - (7)].lexeme), (yyvsp[(6) - (7)].lexeme));
-                                                            (yyval.lexeme) = outbuf;
-                                                        }
+#line 41 "yacc.y"
+    {char outbuf[900];
+                            snprintf(outbuf, sizeof(outbuf), "def %s (): \n ", (yyvsp[(2) - (2)].lexeme));
+                            printf("%s\n", outbuf);}
     break;
 
   case 6:
-#line 50 "yacc.y"
-    {
-                                    //printf("func_body 1\n");
-                                    char *str = (char*) malloc(strlen((yyvsp[(1) - (2)].lexeme)) + strlen((yyvsp[(2) - (2)].lexeme)) + 1);
-                                    strcpy(str, (yyvsp[(1) - (2)].lexeme));
-                                    strcat(str, (yyvsp[(2) - (2)].lexeme));
-                                    (yyval.lexeme) = str;
-                                }
+#line 44 "yacc.y"
+    { }
     break;
 
   case 7:
-#line 58 "yacc.y"
-    { 
-               (yyval.lexeme)=(yyvsp[(1) - (1)].lexeme);
-           }
+#line 46 "yacc.y"
+    {
+                                    
+                                    // char *str = (char*) malloc(strlen($1) + strlen($2) + 1);
+                                    // strcpy(str, $1);
+                                    // strcat(str, $2);
+                                    // $$ = str;
+                                }
     break;
 
   case 8:
-#line 62 "yacc.y"
+#line 54 "yacc.y"
+    { 
+            //    $$=$1;
+           }
+    break;
+
+  case 9:
+#line 58 "yacc.y"
     {
                         (yyval.lexeme)=(yyvsp[(1) - (1)].lexeme);
                     }
     break;
 
-  case 9:
-#line 66 "yacc.y"
+  case 10:
+#line 62 "yacc.y"
     {
-                                                //printf("pinmode %s %s %s\n", $1, $3, $5);
                                                 char outbuf[100];
                                                 char* mode = malloc(20);
                                                 if((yyvsp[(5) - (7)].lexeme) == "INPUT"){
@@ -1407,13 +1409,14 @@ yyreduce:
                                                 mode = "GPIO.OUT"; 
                                                 }
                                                 snprintf(outbuf, sizeof(outbuf), "\t GPIO.setup(%s,%s) \n", (yyvsp[(3) - (7)].lexeme), mode);
-                                                (yyval.lexeme) = outbuf;
+                                                printf("%s",outbuf);
+                                                // $$ = outbuf;
                                             }
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1417 "y.tab.c"
+#line 1420 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1627,7 +1630,7 @@ yyreturn:
 }
 
 
-#line 78 "yacc.y"
+#line 74 "yacc.y"
 
 
 #include "lex.yy.c"
