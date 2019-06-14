@@ -44,7 +44,13 @@
      VOID = 260,
      PINMODE = 261,
      MODE = 262,
-     NUM = 263
+     NUM = 263,
+     DWRITE = 264,
+     HILO = 265,
+     TYPE_N = 266,
+     ID = 267,
+     TYPE_C = 268,
+     STRING = 269
    };
 #endif
 /* Tokens.  */
@@ -54,6 +60,12 @@
 #define PINMODE 261
 #define MODE 262
 #define NUM 263
+#define DWRITE 264
+#define HILO 265
+#define TYPE_N 266
+#define ID 267
+#define TYPE_C 268
+#define STRING 269
 
 
 
@@ -65,7 +77,7 @@ typedef union YYSTYPE
     char* lexeme;			
 }
 /* Line 1529 of yacc.c.  */
-#line 69 "y.tab.h"
+#line 81 "y.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

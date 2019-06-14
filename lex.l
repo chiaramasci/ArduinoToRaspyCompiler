@@ -11,7 +11,15 @@ DEFAULT_FUNC (loop|setup)
 VOID    (void)
 PINMODE (pinMode)
 MODE    (INPUT|OUTPUT)
-NUM     [0-9]+
+DWRITE (digitalWrite)
+HILO    (HIGH|LOW)
+TYPE_N    (int|float|long)
+TYPE_C     (char)
+DIGIT    [0-9]
+NUM      {DIGIT}+(\.{DIGIT}+)?
+LETTER   [a-zA-Z]
+ID       {LETTER}({LETTER}|{DIGIT})*
+STRING    (\".+\")
 
 %%
 
@@ -32,6 +40,17 @@ NUM     [0-9]+
                 return MODE;}
 {NUM}           {yylval.lexeme = strdup(yytext); 
                 return NUM;}
+{DWRITE}        {return DWRITE;}
+{HILO}          {yylval.lexeme = strdup(yytext); 
+                return HILO;}
+{TYPE_N}          {yylval.lexeme = strdup(yytext); 
+                return TYPE_N;}
+{TYPE_C}          {yylval.lexeme = strdup(yytext); 
+                return TYPE_C;}
+{STRING}          {yylval.lexeme = strdup(yytext); 
+                return STRING;}
+{ID}            {yylval.lexeme = strdup(yytext);
+                return ID;}
 
 "("             {return '(';}
 ")"             {return ')';}
@@ -39,6 +58,7 @@ NUM     [0-9]+
 "}"             {return '}';}
 ","             {return ',';}
 ";"             {return ';';}
+"="             {return '=';}
 
 
 %%
