@@ -1,83 +1,44 @@
 %option noyywrap
+
 %{
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include <string.h>
 %}
 
-/*MUSTER*/
-/* Schlüsselwort */
-VOID    void
-SETUP   setup
-PRINT   Serial.print
-DWRITE  digitalWrite
-DREAD   digitalRead
-AWRITE  analogWrite
-AREAD   analogRead
-PINMODE pinMode
-CONST   const
-INT     int
-FLOAT   float
-LONG    long
-UNSIGNED    unsigned
-CHAR    char
-SLEEP   delay
-LOOP    loop
-HIGH    HIGH
-LOW     LOW
-HILO    ({HIGH}|{LOW})
-INPUT   INPUT   
-OUTPUT  OUTPUT 
-INOUT   ({INPUT}|{OUTPUT})
-TYPE    (void|int|float|long|char)
-CALLID  ({PRINT}|{DWRITE}|{DREAD}|{AWRITE}|{AREAD}|{PINMODE}|{SLEEP}|{ID})
-/* Operatoren */
-EQ      =
-OP      [\+\*\/-]
-COMP    [<>{EQ}]{1,2}
-/* Satzzeichensymbol */
-SCOLON  ;
-COMMA   ,
-COMMENT (\/*(\n)?.*(\n)?\/*|\/\/)
-/* Token für Konstanten */
-DIGIT   [0-9]
-DIGITS  {DIGIT}+
-LETTER  [a-zA-Z]
-STRING  \"{LETTER}|{DIGIT}+\"
-
-/* Bezeichner */
-ID      {LETTER}({LETTER}|{DIGIT})*
-NUM     {DIGIT}+(\.{DIGIT}+)?
+COMMENT ((\/[*]((\n)?[^*\/](\n)?)+[*]\/)|(\/\/.*))
+DEFAULT_FUNC (loop|setup)
+VOID    (void)
+PINMODE (pinMode)
+MODE    (INPUT|OUTPUT)
+NUM     [0-9]+
 
 %%
 
-[ ]     { return EMPTY;}
+[ \n\t]        {}
 
-{TYPE}      {yylval.lexeme = strdup(yytext); 
-            return TYPE;}
-{CONST}     {return CONST;}
-{STRING}    {yylval.lexeme = strdup(yytext); 
-            return STRING;}
-{NUM}       {yylval.lexeme = strdup(yytext); 
-            return NUM;}
-{INOUT}     {yylval.lexeme = strdup(yytext);
-            return INOUT;}
-{HILO}      {yylval.lexeme = strdup(yytext);
-            return HILO;}
-{CALLID}    {yylval.lexeme = strdup(yytext); 
-            return CALLID;}
+
 {COMMENT}   {yylval.lexeme = strdup(yytext); 
             return COMMENT;}
-{ID}        {yylval.lexeme = strdup(yytext); 
-            return ID;}
 
-"("     {return ')';}
-")"     {return '(';}
-"{"     {return '{';}
-"}"     {return '}';}
-{OP}    {yylval.lexeme = strdup(yytext); 
-        return OP;}
-"="     {return '=';}
-";"     {return ';';}
-","     {return ',';}
+{DEFAULT_FUNC}  {yylval.lexeme = strdup(yytext); 
+                return DEFAULT_FUNC;}
+
+{VOID}          {yylval.lexeme = strdup(yytext); 
+                return VOID;}
+
+{PINMODE}       {return PINMODE;}
+{MODE}          {yylval.lexeme = strdup(yytext); 
+                return MODE;}
+{NUM}           {yylval.lexeme = strdup(yytext); 
+                return NUM;}
+
+"("             {return '(';}
+")"             {return ')';}
+"{"             {return '{';}
+"}"             {return '}';}
+","             {return ',';}
+";"             {return ';';}
+
+
 %%

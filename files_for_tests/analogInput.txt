@@ -1,0 +1,10 @@
+//Arduino code
+void setup () {
+pinMode(30,OUTPUT);
+pinMode(16,INPUT);
+pinMode(17,INPUT);
+}
+void loop () {
+    pinMode(30,OUTPUT);
+}
+

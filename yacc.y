@@ -1,84 +1,90 @@
 %{
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <stdio.h>
-#include "helper.c"
+    #include <stdlib.h>
+    #include <string.h>
+    #include <ctype.h>
+    #include <stdio.h>
 
-FILE *f;
+    extern int yylex(), yyerror();
 %}
 
 %union {
-       char* lexeme;			//identifier
-       }
+    char* lexeme;			
+}
 
-%token <lexeme> ID STRING COMMENT TYPE CALLID INPUT OUTPUT HIGH LOW SETUP LOOP CONST OP INOUT HILO NUM EMPTY
-
+%token <lexeme> COMMENT DEFAULT_FUNC VOID PINMODE MODE NUM
 /* ehm */
-%left ''
+%left error
 
-%type <lexeme> cmd variable fun new old def call params param paramc defid s type l stms
+%type <lexeme> stms def_func func_body pinMode action_cmd body
 %start stms
 %%
-s:  stms {$$=$1;}
-    | EMPTY {$$=$1;}
-    ;
-stms: cmd s{fprintf(f, "%s\n", $1);exit(0);} 
-    | COMMENT s{fprintf(f, "%s\n", $1);exit(0);} 
-    ;
-cmd: variable {$$ = $1;}
-    | fun     {$$ = $1;}
-    ;
-variable: new ';' {$$ = $1;}
-    |     old ';' {$$ = $1;}
-    ;
-type: STRING {$$=$1;}
-    | NUM   {$$=$1;}
-    ;
-new: CONST TYPE ID '=' type {$$ = conc3($3,'=', $5);}
-    | TYPE ID '=' type {$$ = conc3($2,'=', $4);}
-    ;
-old: ID '=' type {$$ = conc3($1,'=', $3);}
-    ;
-fun: def { $$=$1;}
-    | call';' {$$= $1;}
-    ;
-    /*WRONg*/
-call: CALLID '(' params ')' { $$= conc4($1, '(', $3, ')');}
-    ;
-params: param {$$=$1;}
-    |   paramc param {$$= strcat($1, $2);}
-    |   EMPTY {$$=$1;}
-    ;
-paramc: param ',' l {$$= conc3($1,',',$3);}
-    ;
-l:  paramc {$$=$1;}
-    | EMPTY {$$=$1;}
-    ;
-param: STRING {$$=$1;}
-    |  NUM {$$=$1;}
-    ;
-    /* problema taaab!!*/
-defid: SETUP {$$=$1;}
-    |   LOOP {$$=$1;}
-    |   ID {$$=$1;}
-    ;
-def: TYPE defid '(' params ')' '{' stms '}' {$$=conc7('def', $2, '(', $4, ')',':',$7);}
-    ;
+stms:   COMMENT body    {
+                            //printf("stms %s\n", $1);
+                            char* c = $1;
+                            char* comment = malloc(200);
+                            strncpy(comment, c+2, 200);
+
+                            printf("# %s\n %s", comment, $2);
+                                        
+                        };
+
+body:  def_func body   {       
+                            //printf("body\n");
+                            char outbuf[600];
+                            snprintf(outbuf, sizeof(outbuf), " %s \n", $2);
+                            $$ = outbuf;
+                        }
+        | def_func {
+                        char outbuf[600];
+                        snprintf(outbuf, sizeof(outbuf), " %s \n", $1);
+                        $$ = outbuf;
+                    };
+
+def_func: VOID DEFAULT_FUNC '(' ')' '{' func_body '}'   {
+                                                           // printf("def_func %s %s\n", $1, $2);
+                                                            char outbuf[900];
+                                                            snprintf(outbuf, sizeof(outbuf), "def %s (): \n %s", $2, $6);
+                                                            $$ = outbuf;
+                                                        };
+
+func_body: action_cmd func_body {
+                                    //printf("func_body 1\n");
+                                    char *str = (char*) malloc(strlen($1) + strlen($2) + 1);
+                                    strcpy(str, $1);
+                                    strcat(str, $2);
+                                    $$ = str;
+                                }
+            
+           | action_cmd { 
+               $$=$1;
+           };
+
+action_cmd: pinMode {
+                        $$=$1;
+                    };
+
+pinMode: PINMODE '(' NUM ',' MODE ')' ';'   {
+                                                //printf("pinmode %s %s %s\n", $1, $3, $5);
+                                                char outbuf[100];
+                                                char* mode = malloc(20);
+                                                if($5 == "INPUT"){
+                                                    mode = "GPIO.IN";
+                                                }else{
+                                                mode = "GPIO.OUT"; 
+                                                }
+                                                snprintf(outbuf, sizeof(outbuf), "\t GPIO.setup(%s,%s) \n", $3, mode);
+                                                $$ = outbuf;
+                                            };
 %%
 
 #include "lex.yy.c"
 
+
 int main(int argc, char **argv){
-    f = fopen("output.py","w");
-    if ( f == NULL) {
-        printf("Error opening file!\n");
-        exit(1);
-        }
 
 yyparse();
 return 0;
-
-
 }
+
+
 
