@@ -17,77 +17,85 @@ Grammar
 
     8 cmd: action_cmd
     9    | var_cmd
+   10    | comment
 
-   10 action_cmd: pinMode
-   11           | digitalWrite
+   11 action_cmd: pinMode
+   12           | digitalWrite
+   13           | print
 
-   12 var_cmd: var_n_cmd
-   13        | var_c_cmd
+   14 var_cmd: var_n_cmd
+   15        | var_c_cmd
 
-   14 var_c_cmd: TYPE_C ID '=' STRING ';'
+   16 print: PRINT '(' STRING ')' ';'
 
-   15 var_n_cmd: TYPE_N ID '=' NUM ';'
+   17 var_c_cmd: TYPE_C ID '=' STRING ';'
 
-   16 pinMode: PINMODE '(' NUM ',' MODE ')' ';'
+   18 var_n_cmd: TYPE_N ID '=' NUM ';'
 
-   17 digitalWrite: DWRITE '(' NUM ',' HILO ')' ';'
+   19 pinMode: PINMODE '(' NUM ',' MODE ')' ';'
+   20        | PINMODE '(' ID ',' MODE ')' ';'
+
+   21 digitalWrite: DWRITE '(' NUM ',' HILO ')' ';'
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
-'(' (40) 5 16 17
-')' (41) 5 16 17
-',' (44) 16 17
-';' (59) 14 15 16 17
-'=' (61) 14 15
+'(' (40) 5 16 19 20 21
+')' (41) 5 16 19 20 21
+',' (44) 19 20 21
+';' (59) 16 17 18 19 20 21
+'=' (61) 17 18
 '{' (123) 5
 '}' (125) 5
 error (256)
 COMMENT (258) 2
 DEFAULT_FUNC (259) 5
 VOID (260) 5
-PINMODE (261) 16
-MODE (262) 16
-NUM (263) 15 16 17
-DWRITE (264) 17
-HILO (265) 17
-TYPE_N (266) 15
-ID (267) 14 15
-TYPE_C (268) 14
-STRING (269) 14
+PINMODE (261) 19 20
+MODE (262) 19 20
+NUM (263) 18 19 21
+DWRITE (264) 21
+HILO (265) 21
+TYPE_N (266) 18
+ID (267) 17 18 20
+TYPE_C (268) 17
+STRING (269) 16 17
+PRINT (270) 16
 
 
 Nonterminals, with rules where they appear
 
-$accept (22)
+$accept (23)
     on left: 0
-stms (23)
+stms (24)
     on left: 1, on right: 0
-comment (24)
-    on left: 2, on right: 1
-body (25)
+comment (25)
+    on left: 2, on right: 1 10
+body (26)
     on left: 3, on right: 1
-def_func (26)
+def_func (27)
     on left: 5, on right: 3
-@1 (27)
+@1 (28)
     on left: 4, on right: 5
-func_body (28)
+func_body (29)
     on left: 6 7, on right: 5 6
-cmd (29)
-    on left: 8 9, on right: 6 7
-action_cmd (30)
-    on left: 10 11, on right: 8
-var_cmd (31)
-    on left: 12 13, on right: 9
-var_c_cmd (32)
-    on left: 14, on right: 13
-var_n_cmd (33)
-    on left: 15, on right: 12
-pinMode (34)
-    on left: 16, on right: 10
-digitalWrite (35)
-    on left: 17, on right: 11
+cmd (30)
+    on left: 8 9 10, on right: 6 7
+action_cmd (31)
+    on left: 11 12 13, on right: 8
+var_cmd (32)
+    on left: 14 15, on right: 9
+print (33)
+    on left: 16, on right: 13
+var_c_cmd (34)
+    on left: 17, on right: 15
+var_n_cmd (35)
+    on left: 18, on right: 14
+pinMode (36)
+    on left: 19 20, on right: 11
+digitalWrite (37)
+    on left: 21, on right: 12
 
 
 state 0
@@ -195,269 +203,364 @@ state 13
 
     5 def_func: VOID DEFAULT_FUNC @1 '(' ')' '{' . func_body '}'
 
+    COMMENT  shift, and go to state 1
     PINMODE  shift, and go to state 14
     DWRITE   shift, and go to state 15
     TYPE_N   shift, and go to state 16
     TYPE_C   shift, and go to state 17
+    PRINT    shift, and go to state 18
 
-    func_body     go to state 18
-    cmd           go to state 19
-    action_cmd    go to state 20
-    var_cmd       go to state 21
-    var_c_cmd     go to state 22
-    var_n_cmd     go to state 23
-    pinMode       go to state 24
-    digitalWrite  go to state 25
+    comment       go to state 19
+    func_body     go to state 20
+    cmd           go to state 21
+    action_cmd    go to state 22
+    var_cmd       go to state 23
+    print         go to state 24
+    var_c_cmd     go to state 25
+    var_n_cmd     go to state 26
+    pinMode       go to state 27
+    digitalWrite  go to state 28
 
 
 state 14
 
-   16 pinMode: PINMODE . '(' NUM ',' MODE ')' ';'
+   19 pinMode: PINMODE . '(' NUM ',' MODE ')' ';'
+   20        | PINMODE . '(' ID ',' MODE ')' ';'
 
-    '('  shift, and go to state 26
+    '('  shift, and go to state 29
 
 
 state 15
 
-   17 digitalWrite: DWRITE . '(' NUM ',' HILO ')' ';'
+   21 digitalWrite: DWRITE . '(' NUM ',' HILO ')' ';'
 
-    '('  shift, and go to state 27
+    '('  shift, and go to state 30
 
 
 state 16
 
-   15 var_n_cmd: TYPE_N . ID '=' NUM ';'
+   18 var_n_cmd: TYPE_N . ID '=' NUM ';'
 
-    ID  shift, and go to state 28
+    ID  shift, and go to state 31
 
 
 state 17
 
-   14 var_c_cmd: TYPE_C . ID '=' STRING ';'
+   17 var_c_cmd: TYPE_C . ID '=' STRING ';'
 
-    ID  shift, and go to state 29
+    ID  shift, and go to state 32
 
 
 state 18
 
-    5 def_func: VOID DEFAULT_FUNC @1 '(' ')' '{' func_body . '}'
+   16 print: PRINT . '(' STRING ')' ';'
 
-    '}'  shift, and go to state 30
+    '('  shift, and go to state 33
 
 
 state 19
 
+   10 cmd: comment .
+
+    $default  reduce using rule 10 (cmd)
+
+
+state 20
+
+    5 def_func: VOID DEFAULT_FUNC @1 '(' ')' '{' func_body . '}'
+
+    '}'  shift, and go to state 34
+
+
+state 21
+
     6 func_body: cmd . func_body
     7          | cmd .
 
+    COMMENT  shift, and go to state 1
     PINMODE  shift, and go to state 14
     DWRITE   shift, and go to state 15
     TYPE_N   shift, and go to state 16
     TYPE_C   shift, and go to state 17
+    PRINT    shift, and go to state 18
 
     $default  reduce using rule 7 (func_body)
 
-    func_body     go to state 31
-    cmd           go to state 19
-    action_cmd    go to state 20
-    var_cmd       go to state 21
-    var_c_cmd     go to state 22
-    var_n_cmd     go to state 23
-    pinMode       go to state 24
-    digitalWrite  go to state 25
+    comment       go to state 19
+    func_body     go to state 35
+    cmd           go to state 21
+    action_cmd    go to state 22
+    var_cmd       go to state 23
+    print         go to state 24
+    var_c_cmd     go to state 25
+    var_n_cmd     go to state 26
+    pinMode       go to state 27
+    digitalWrite  go to state 28
 
 
-state 20
+state 22
 
     8 cmd: action_cmd .
 
     $default  reduce using rule 8 (cmd)
 
 
-state 21
+state 23
 
     9 cmd: var_cmd .
 
     $default  reduce using rule 9 (cmd)
 
 
-state 22
-
-   13 var_cmd: var_c_cmd .
-
-    $default  reduce using rule 13 (var_cmd)
-
-
-state 23
-
-   12 var_cmd: var_n_cmd .
-
-    $default  reduce using rule 12 (var_cmd)
-
-
 state 24
 
-   10 action_cmd: pinMode .
+   13 action_cmd: print .
 
-    $default  reduce using rule 10 (action_cmd)
+    $default  reduce using rule 13 (action_cmd)
 
 
 state 25
 
-   11 action_cmd: digitalWrite .
+   15 var_cmd: var_c_cmd .
 
-    $default  reduce using rule 11 (action_cmd)
+    $default  reduce using rule 15 (var_cmd)
 
 
 state 26
 
-   16 pinMode: PINMODE '(' . NUM ',' MODE ')' ';'
+   14 var_cmd: var_n_cmd .
 
-    NUM  shift, and go to state 32
+    $default  reduce using rule 14 (var_cmd)
 
 
 state 27
 
-   17 digitalWrite: DWRITE '(' . NUM ',' HILO ')' ';'
+   11 action_cmd: pinMode .
 
-    NUM  shift, and go to state 33
+    $default  reduce using rule 11 (action_cmd)
 
 
 state 28
 
-   15 var_n_cmd: TYPE_N ID . '=' NUM ';'
+   12 action_cmd: digitalWrite .
 
-    '='  shift, and go to state 34
+    $default  reduce using rule 12 (action_cmd)
 
 
 state 29
 
-   14 var_c_cmd: TYPE_C ID . '=' STRING ';'
+   19 pinMode: PINMODE '(' . NUM ',' MODE ')' ';'
+   20        | PINMODE '(' . ID ',' MODE ')' ';'
 
-    '='  shift, and go to state 35
+    NUM  shift, and go to state 36
+    ID   shift, and go to state 37
 
 
 state 30
+
+   21 digitalWrite: DWRITE '(' . NUM ',' HILO ')' ';'
+
+    NUM  shift, and go to state 38
+
+
+state 31
+
+   18 var_n_cmd: TYPE_N ID . '=' NUM ';'
+
+    '='  shift, and go to state 39
+
+
+state 32
+
+   17 var_c_cmd: TYPE_C ID . '=' STRING ';'
+
+    '='  shift, and go to state 40
+
+
+state 33
+
+   16 print: PRINT '(' . STRING ')' ';'
+
+    STRING  shift, and go to state 41
+
+
+state 34
 
     5 def_func: VOID DEFAULT_FUNC @1 '(' ')' '{' func_body '}' .
 
     $default  reduce using rule 5 (def_func)
 
 
-state 31
+state 35
 
     6 func_body: cmd func_body .
 
     $default  reduce using rule 6 (func_body)
 
 
-state 32
-
-   16 pinMode: PINMODE '(' NUM . ',' MODE ')' ';'
-
-    ','  shift, and go to state 36
-
-
-state 33
-
-   17 digitalWrite: DWRITE '(' NUM . ',' HILO ')' ';'
-
-    ','  shift, and go to state 37
-
-
-state 34
-
-   15 var_n_cmd: TYPE_N ID '=' . NUM ';'
-
-    NUM  shift, and go to state 38
-
-
-state 35
-
-   14 var_c_cmd: TYPE_C ID '=' . STRING ';'
-
-    STRING  shift, and go to state 39
-
-
 state 36
 
-   16 pinMode: PINMODE '(' NUM ',' . MODE ')' ';'
+   19 pinMode: PINMODE '(' NUM . ',' MODE ')' ';'
 
-    MODE  shift, and go to state 40
+    ','  shift, and go to state 42
 
 
 state 37
 
-   17 digitalWrite: DWRITE '(' NUM ',' . HILO ')' ';'
+   20 pinMode: PINMODE '(' ID . ',' MODE ')' ';'
 
-    HILO  shift, and go to state 41
+    ','  shift, and go to state 43
 
 
 state 38
 
-   15 var_n_cmd: TYPE_N ID '=' NUM . ';'
+   21 digitalWrite: DWRITE '(' NUM . ',' HILO ')' ';'
 
-    ';'  shift, and go to state 42
+    ','  shift, and go to state 44
 
 
 state 39
 
-   14 var_c_cmd: TYPE_C ID '=' STRING . ';'
+   18 var_n_cmd: TYPE_N ID '=' . NUM ';'
 
-    ';'  shift, and go to state 43
+    NUM  shift, and go to state 45
 
 
 state 40
 
-   16 pinMode: PINMODE '(' NUM ',' MODE . ')' ';'
+   17 var_c_cmd: TYPE_C ID '=' . STRING ';'
 
-    ')'  shift, and go to state 44
+    STRING  shift, and go to state 46
 
 
 state 41
 
-   17 digitalWrite: DWRITE '(' NUM ',' HILO . ')' ';'
+   16 print: PRINT '(' STRING . ')' ';'
 
-    ')'  shift, and go to state 45
+    ')'  shift, and go to state 47
 
 
 state 42
 
-   15 var_n_cmd: TYPE_N ID '=' NUM ';' .
+   19 pinMode: PINMODE '(' NUM ',' . MODE ')' ';'
 
-    $default  reduce using rule 15 (var_n_cmd)
+    MODE  shift, and go to state 48
 
 
 state 43
 
-   14 var_c_cmd: TYPE_C ID '=' STRING ';' .
+   20 pinMode: PINMODE '(' ID ',' . MODE ')' ';'
 
-    $default  reduce using rule 14 (var_c_cmd)
+    MODE  shift, and go to state 49
 
 
 state 44
 
-   16 pinMode: PINMODE '(' NUM ',' MODE ')' . ';'
+   21 digitalWrite: DWRITE '(' NUM ',' . HILO ')' ';'
 
-    ';'  shift, and go to state 46
+    HILO  shift, and go to state 50
 
 
 state 45
 
-   17 digitalWrite: DWRITE '(' NUM ',' HILO ')' . ';'
+   18 var_n_cmd: TYPE_N ID '=' NUM . ';'
 
-    ';'  shift, and go to state 47
+    ';'  shift, and go to state 51
 
 
 state 46
 
-   16 pinMode: PINMODE '(' NUM ',' MODE ')' ';' .
+   17 var_c_cmd: TYPE_C ID '=' STRING . ';'
 
-    $default  reduce using rule 16 (pinMode)
+    ';'  shift, and go to state 52
 
 
 state 47
 
-   17 digitalWrite: DWRITE '(' NUM ',' HILO ')' ';' .
+   16 print: PRINT '(' STRING ')' . ';'
 
-    $default  reduce using rule 17 (digitalWrite)
+    ';'  shift, and go to state 53
+
+
+state 48
+
+   19 pinMode: PINMODE '(' NUM ',' MODE . ')' ';'
+
+    ')'  shift, and go to state 54
+
+
+state 49
+
+   20 pinMode: PINMODE '(' ID ',' MODE . ')' ';'
+
+    ')'  shift, and go to state 55
+
+
+state 50
+
+   21 digitalWrite: DWRITE '(' NUM ',' HILO . ')' ';'
+
+    ')'  shift, and go to state 56
+
+
+state 51
+
+   18 var_n_cmd: TYPE_N ID '=' NUM ';' .
+
+    $default  reduce using rule 18 (var_n_cmd)
+
+
+state 52
+
+   17 var_c_cmd: TYPE_C ID '=' STRING ';' .
+
+    $default  reduce using rule 17 (var_c_cmd)
+
+
+state 53
+
+   16 print: PRINT '(' STRING ')' ';' .
+
+    $default  reduce using rule 16 (print)
+
+
+state 54
+
+   19 pinMode: PINMODE '(' NUM ',' MODE ')' . ';'
+
+    ';'  shift, and go to state 57
+
+
+state 55
+
+   20 pinMode: PINMODE '(' ID ',' MODE ')' . ';'
+
+    ';'  shift, and go to state 58
+
+
+state 56
+
+   21 digitalWrite: DWRITE '(' NUM ',' HILO ')' . ';'
+
+    ';'  shift, and go to state 59
+
+
+state 57
+
+   19 pinMode: PINMODE '(' NUM ',' MODE ')' ';' .
+
+    $default  reduce using rule 19 (pinMode)
+
+
+state 58
+
+   20 pinMode: PINMODE '(' ID ',' MODE ')' ';' .
+
+    $default  reduce using rule 20 (pinMode)
+
+
+state 59
+
+   21 digitalWrite: DWRITE '(' NUM ',' HILO ')' ';' .
+
+    $default  reduce using rule 21 (digitalWrite)

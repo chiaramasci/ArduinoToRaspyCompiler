@@ -20,6 +20,7 @@ NUM      {DIGIT}+(\.{DIGIT}+)?
 LETTER   [a-zA-Z]
 ID       {LETTER}({LETTER}|{DIGIT})*
 STRING    (\".+\")
+PRINT   (Serial.print)
 
 %%
 
@@ -34,7 +35,6 @@ STRING    (\".+\")
 
 {VOID}          {yylval.lexeme = strdup(yytext); 
                 return VOID;}
-
 {PINMODE}       {return PINMODE;}
 {MODE}          {yylval.lexeme = strdup(yytext); 
                 return MODE;}
@@ -51,6 +51,8 @@ STRING    (\".+\")
                 return STRING;}
 {ID}            {yylval.lexeme = strdup(yytext);
                 return ID;}
+{PRINT}          {yylval.lexeme = strdup(yytext);
+                return PRINT;}
 
 "("             {return '(';}
 ")"             {return ')';}

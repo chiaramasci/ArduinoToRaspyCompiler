@@ -50,7 +50,8 @@
      TYPE_N = 266,
      ID = 267,
      TYPE_C = 268,
-     STRING = 269
+     STRING = 269,
+     PRINT = 270
    };
 #endif
 /* Tokens.  */
@@ -66,18 +67,19 @@
 #define ID 267
 #define TYPE_C 268
 #define STRING 269
+#define PRINT 270
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 10 "yacc.y"
+#line 12 "yacc.y"
 {
     char* lexeme;			
 }
 /* Line 1529 of yacc.c.  */
-#line 81 "y.tab.h"
+#line 83 "y.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

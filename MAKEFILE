@@ -1,7 +1,7 @@
 flex -l lex.l
 yacc -vd yacc.y
-gcc -o theUauCompiler y.tab.c -ly -ll
+gcc -o RaspyComp y.tab.c -ly -ll
 
 # $(NAME) is the name of the file to run
-# example: ./MAKEFILE ./files_for_tests/analogInput.c
-./theUauCompiler < $1
+# example: ./MAKEFILE ./led.c
+./RaspyComp < $1
